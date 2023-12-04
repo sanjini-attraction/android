@@ -6,28 +6,15 @@ import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.jeongg.sanjini_attraction.presentation.view.bluetooth.BluetoothConnect
-import com.jeongg.sanjini_attraction.presentation.view.bluetooth.BluetoothViewModel
-import com.jeongg.sanjini_attraction.ui.theme.Sanjini_attractionTheme
+import com.jeongg.sanjini_attraction.util.SanjiniAttractionTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private val bluetoothManager by lazy {
         applicationContext.getSystemService(BluetoothManager::class.java)
     }
@@ -39,53 +26,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bluetooth_setting()
-        setContent {
-            Sanjini_attractionTheme {
-                // A surface container using the 'background' color from the theme
-                val viewModel = hiltViewModel<BluetoothViewModel>()
-                val state by viewModel.state.collectAsState()
-
-                LaunchedEffect(key1 = state.errorMessage) {
-                    state.errorMessage?.let { message ->
-                        Toast.makeText(
-                            applicationContext,
-                            message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-                LaunchedEffect(key1 = state.isConnected) {
-                    if(state.isConnected) {
-                        Toast.makeText(
-                            applicationContext,
-                            "You're connected!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-                when {
-                    state.isConnecting -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator()
-                            Text(text = "Connecting...")
-                        }
-                    }
-                    state.isConnected -> {
-
-                    }
-                    else -> {
-                        BluetoothConnect(state)
-                    }
-                }
-            }
-        }
+        bluetoothPermissionSetting()
+        setContent { SanjiniAttractionTheme() }
     }
-    private fun bluetooth_setting(){
+
+    private fun bluetoothPermissionSetting(){
+
         val enableBluetoothLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { /* Not needed */ }
