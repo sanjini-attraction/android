@@ -132,7 +132,7 @@ class BluetoothRepositoryImpl(
 
                     socket.close()
                     currentClientSocket = null
-                    emit(ConnectionResult.Error("Connection was interrupted"))
+                    emit(ConnectionResult.Error("해당 Device와의 연결에 실패했습니다."))
                 }
             }
         }.onCompletion {
