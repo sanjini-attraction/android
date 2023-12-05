@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,18 +50,18 @@ fun ReadyForGameScreen(
 ){
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val eventFlow by viewModel.eventFlow.collectAsState()
 
-    LaunchedEffect(key1 = true){
-        viewModel.eventFlow.collectLatest{ event ->
-            when(event){
-                is SanjiniEvent.SUCCESS -> {
-                    val index = viewModel.getSelectedIndex()
-                    navController.navigate(Screen.GameScreen.route + "?index=$index")
-                }
-                is SanjiniEvent.ERROR -> Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                else -> {}
+    LaunchedEffect(key1 = eventFlow){
+       when(eventFlow){
+            is SanjiniEvent.SUCCESS -> {
+                val index = viewModel.getSelectedIndex()
+                navController.navigate(Screen.GameScreen.route + "?index=$index")
             }
+            is SanjiniEvent.ERROR -> Toast.makeText(context, "데이터 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            else -> {}
         }
+
     }
     SanjiniButtonTitle(
         modifier = Modifier

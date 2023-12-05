@@ -11,6 +11,7 @@ import com.jeongg.sanjini_attraction.domain.repository.BluetoothRepository
 import com.jeongg.sanjini_attraction.presentation.util.SanjiniEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +20,7 @@ class ReadyForGameViewModel @Inject constructor(
     private val bluetoothRepository: BluetoothRepository
 ): ViewModel() {
 
-    private val _eventFlow = MutableSharedFlow<SanjiniEvent>()
+    private val _eventFlow = MutableStateFlow<SanjiniEvent>(SanjiniEvent.LOADING)
     val eventFlow = _eventFlow
 
     private val _people = mutableStateOf("")
