@@ -38,11 +38,6 @@ fun BluetoothScreen(
             Toast.makeText(context,message,Toast.LENGTH_LONG).show()
         }
     }
-    LaunchedEffect(key1 = state.isConnected) {
-        if(state.isConnected) {
-            Toast.makeText(context, "블루투스 연결에 성공했습니다.", Toast.LENGTH_LONG).show()
-        }
-    }
     when{
         state.isConnecting -> ProgressIndicator()
         state.isConnected -> { navController.navigate(Screen.ReadyForGameScreen.route) }
@@ -57,7 +52,7 @@ fun BluetoothScreen(
                 Text(
                     text = "페어링 완료된 기기",
                     style = typography.titleMedium,
-                    modifier = Modifier.padding(top = 15.dp)
+                    modifier = Modifier.padding(top = 25.dp)
                 )
             }
             item{ SanjiniDivider(modifier = Modifier.padding(top = 7.dp, bottom = 15.dp)) }

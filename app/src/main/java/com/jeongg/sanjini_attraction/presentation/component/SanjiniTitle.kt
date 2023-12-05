@@ -1,6 +1,5 @@
 package com.jeongg.sanjini_attraction.presentation.component
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +33,7 @@ fun SanjiniTitle(
         Text(
             text = description,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 23.dp, bottom = Dimens.PaddingNormal)
+            modifier = Modifier.padding(top = 23.dp)
         )
         Column(content=content)
     }

@@ -1,6 +1,5 @@
 package com.jeongg.sanjini_attraction.presentation.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
