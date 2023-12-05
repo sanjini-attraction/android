@@ -81,11 +81,10 @@ class GameViewModel @Inject constructor(
         return onEach { result ->
             when(result) {
                 is ConnectionResult.TransferSucceeded -> {
-                    "result in viewModel ${result.message}".log()
                     _state.update { it.copy(
                         messages = it.messages + result.message
                     ) }
-                    "result in viewModel2 ${state.value.messages.toString()}".log()
+                    "result in GameViewModel ${state.value.messages}".log()
                 }
                 is ConnectionResult.Error -> {
                     _state.update { it.copy(

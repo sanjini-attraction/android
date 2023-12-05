@@ -44,9 +44,7 @@ class BluetoothViewModel @Inject constructor(
 
     fun connectToDevice(device: BluetoothDeviceDomain) {
         _state.update { it.copy(isConnecting = true) }
-        deviceConnectionJob = bluetoothRepository
-            .connectToDevice(device)
-            .listen()
+        deviceConnectionJob = bluetoothRepository.connectToDevice(device).listen()
     }
 
     private fun Flow<ConnectionResult>.listen(): Job {
@@ -59,11 +57,6 @@ class BluetoothViewModel @Inject constructor(
                         errorMessage = null
                     ) }
                 }
-                is ConnectionResult.TransferSucceeded -> {
-                    _state.update { it.copy(
-                        messages = it.messages + result.message
-                    ) }
-                }
                 is ConnectionResult.Error -> {
                     _state.update { it.copy(
                         isConnected = false,
@@ -71,6 +64,7 @@ class BluetoothViewModel @Inject constructor(
                         errorMessage = result.message
                     ) }
                 }
+                else -> {}
             }
         }
             .catch { throwable ->

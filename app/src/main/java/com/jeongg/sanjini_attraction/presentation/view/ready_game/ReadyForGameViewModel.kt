@@ -52,7 +52,6 @@ class ReadyForGameViewModel @Inject constructor(
             is ReadyForGameEvent.StartGame -> {
                 sendMessage()
             }
-            else -> {}
         }
     }
     fun getSelectedIndex(): Int{
