@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface BluetoothRepository {
     val isConnected: StateFlow<Boolean>
+    val messages: StateFlow<List<String>>
     val pairedDevices: StateFlow<List<BluetoothDevice>>
     val errors: SharedFlow<String>
 
@@ -19,4 +20,5 @@ interface BluetoothRepository {
 
     fun closeConnection()
     fun release()
+    fun getResult(): Flow<ConnectionResult>
 }

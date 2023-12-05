@@ -12,13 +12,15 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import com.jeongg.sanjini_attraction.data.service.BluetoothDataTransferService
 import com.jeongg.sanjini_attraction.data.service.BluetoothStateReceiverService
-import com.jeongg.sanjini_attraction.domain.repository.BluetoothRepository
 import com.jeongg.sanjini_attraction.domain.mapper.toBluetoothDeviceDomain
 import com.jeongg.sanjini_attraction.domain.model.BluetoothDeviceDomain
 import com.jeongg.sanjini_attraction.domain.model.ConnectionResult
+import com.jeongg.sanjini_attraction.domain.repository.BluetoothRepository
+import com.jeongg.sanjini_attraction.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -52,6 +54,10 @@ class BluetoothRepositoryImpl(
     private val _isConnected = MutableStateFlow(false)
     override val isConnected: StateFlow<Boolean>
         get() = _isConnected.asStateFlow()
+
+    private val _messages = MutableStateFlow<List<String>>(emptyList())
+    override val messages: StateFlow<List<String>>
+        get() = _messages.asStateFlow()
 
     private val _pairedDevices = MutableStateFlow<List<BluetoothDeviceDomain>>(emptyList())
     override val pairedDevices: StateFlow<List<BluetoothDeviceDomain>>
@@ -113,31 +119,45 @@ class BluetoothRepositoryImpl(
                 ?.createInsecureRfcommSocketToServiceRecord(
                     myuuid
                 )
-
             stopDiscovery()
-
             currentClientSocket?.let { socket ->
-                try {
-                    socket.connect()
-                    emit(ConnectionResult.ConnectionEstablished)
-
-                    BluetoothDataTransferService(socket).also {
-                        dataTransferService = it
-                        emitAll(
-                            it.listenForIncomingMessages()
-                                .map { ConnectionResult.TransferSucceeded(it) }
-                        )
-                    }
-                } catch(e: IOException) {
-
-                    socket.close()
-                    currentClientSocket = null
-                    emit(ConnectionResult.Error("해당 Device와의 연결에 실패했습니다."))
-                }
+                socket.connect()
+                emit(ConnectionResult.ConnectionEstablished)
             }
+            getMessage()
         }.onCompletion {
             closeConnection()
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getResult(): Flow<ConnectionResult>{
+        return flow {
+            getMessage()
+        }.onCompletion {
+            closeConnection()
+        }.flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun FlowCollector<ConnectionResult>.getMessage() {
+        currentClientSocket?.let { socket ->
+            try {
+                BluetoothDataTransferService(socket).also {
+                    dataTransferService = it
+                    emitAll(
+                        it.listenForIncomingMessages()
+                            .map { message ->
+                                "데이터 받아옴  in repositoryImpl ${messages.value.toString()}".log()
+                                _messages.update { m -> m.plus(message) }
+                                ConnectionResult.TransferSucceeded(message)
+                            }
+                    )
+                }
+            } catch (e: IOException) {
+                socket.close()
+                currentClientSocket = null
+                emit(ConnectionResult.Error("해당 Device와의 연결에 실패했습니다."))
+            }
+        }
     }
 
     override suspend fun trySendMessage(message: String): String? {
@@ -164,7 +184,6 @@ class BluetoothRepositoryImpl(
         closeConnection()
     }
 
-
     private fun updatePairedDevices() {
         if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
             return
@@ -176,9 +195,9 @@ class BluetoothRepositoryImpl(
                 _pairedDevices.update { devices }
             }
     }
+
     private fun hasPermission(permission: String): Boolean {
         return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
-
 
 }
