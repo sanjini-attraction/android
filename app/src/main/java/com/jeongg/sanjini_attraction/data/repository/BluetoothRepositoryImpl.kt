@@ -173,6 +173,7 @@ class BluetoothRepositoryImpl(
     }
 
     override fun closeConnection() {
+        _messages.value = emptyList()
         currentClientSocket?.close()
         currentServerSocket?.close()
         currentClientSocket = null

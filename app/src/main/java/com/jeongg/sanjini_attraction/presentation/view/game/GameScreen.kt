@@ -1,6 +1,5 @@
 package com.jeongg.sanjini_attraction.presentation.view.game
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -27,12 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.jeongg.sanjini_attraction.presentation.component.ProgressIndicator
 import com.jeongg.sanjini_attraction.presentation.component.SanjiniTitle
 import com.jeongg.sanjini_attraction.presentation.navigation.Screen
 import com.jeongg.sanjini_attraction.ui.theme.main_yellow
 import com.jeongg.sanjini_attraction.ui.theme.typography
-import com.jeongg.sanjini_attraction.util.log
 
 const val FINISH_MESSAGE = "a"
 
@@ -44,14 +41,12 @@ fun GameScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
+    if (state.messages.contains(FINISH_MESSAGE)){
+        navController.navigate(Screen.FinishGameScreen.route)
+    }
     LaunchedEffect(key1 = state.errorMessage) {
         state.errorMessage?.let { message ->
             Toast.makeText(context,message, Toast.LENGTH_LONG).show()
-        }
-    }
-    LaunchedEffect(key1 = state.messages){
-        if (state.messages.contains(FINISH_MESSAGE)){
-            navController.navigate(Screen.FinishGameScreen.route)
         }
     }
     SanjiniTitle(title = viewModel.title.value, description = viewModel.description.value) {
