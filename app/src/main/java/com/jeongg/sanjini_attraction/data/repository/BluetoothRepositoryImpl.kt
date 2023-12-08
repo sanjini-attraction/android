@@ -51,6 +51,14 @@ class BluetoothRepositoryImpl(
 
     private var dataTransferService: BluetoothDataTransferService? = null
 
+    private val _people = MutableStateFlow(0)
+    override val people: StateFlow<Int>
+        get() = _people.asStateFlow()
+
+    private val _score = MutableStateFlow(0)
+    override val score: StateFlow<Int>
+        get() = _score.asStateFlow()
+
     private val _isConnected = MutableStateFlow(false)
     override val isConnected: StateFlow<Boolean>
         get() = _isConnected.asStateFlow()
@@ -107,17 +115,25 @@ class BluetoothRepositoryImpl(
         bluetoothAdapter?.cancelDiscovery()
     }
 
+    override fun setPeople(people: Int){
+        _people.update { people }
+    }
+
+    override fun setScore(score: Int) {
+        _score.update { score }
+    }
+
     override fun connectToDevice(device: BluetoothDeviceDomain): Flow<ConnectionResult> {
         return flow {
             if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
                 throw SecurityException("No BLUETOOTH_CONNECT permission")
             }
 
-            val mydevice = bluetoothAdapter?.getRemoteDevice(device.address)
-            val myuuid: UUID? = mydevice?.uuids?.get(0)?.uuid
-            currentClientSocket = mydevice
+            val myDevice = bluetoothAdapter?.getRemoteDevice(device.address)
+            val myUUID: UUID? = myDevice?.uuids?.get(0)?.uuid
+            currentClientSocket = myDevice
                 ?.createInsecureRfcommSocketToServiceRecord(
-                    myuuid
+                    myUUID
                 )
             stopDiscovery()
             currentClientSocket?.let { socket ->

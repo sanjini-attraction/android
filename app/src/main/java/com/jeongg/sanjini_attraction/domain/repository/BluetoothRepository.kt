@@ -11,6 +11,8 @@ interface BluetoothRepository {
     val messages: StateFlow<List<String>>
     val pairedDevices: StateFlow<List<BluetoothDevice>>
     val errors: SharedFlow<String>
+    val people: StateFlow<Int>
+    val score: StateFlow<Int>
 
     fun startDiscovery()
     fun stopDiscovery()
@@ -21,4 +23,7 @@ interface BluetoothRepository {
     fun closeConnection()
     fun release()
     fun getResult(): Flow<ConnectionResult>
+
+    fun setPeople(people: Int)
+    fun setScore(score: Int)
 }
