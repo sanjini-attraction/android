@@ -1,6 +1,5 @@
 package com.jeongg.sanjini_attraction.presentation.view.ready_game
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,6 @@ import com.jeongg.sanjini_attraction.domain.model.SelectionOption
 import com.jeongg.sanjini_attraction.domain.repository.BluetoothRepository
 import com.jeongg.sanjini_attraction.presentation.util.SanjiniEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,6 +50,8 @@ class ReadyForGameViewModel @Inject constructor(
             }
             is ReadyForGameEvent.StartGame -> {
                 sendMessage()
+                bluetoothRepository.setPeople(people.value.toInt())
+                bluetoothRepository.setScore(score.value.toInt())
             }
         }
     }

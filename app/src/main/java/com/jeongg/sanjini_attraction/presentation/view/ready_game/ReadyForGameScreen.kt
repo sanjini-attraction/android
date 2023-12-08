@@ -50,18 +50,18 @@ fun ReadyForGameScreen(
 ){
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val eventFlow by viewModel.eventFlow.collectAsState()
 
-    LaunchedEffect(key1 = eventFlow){
-       when(eventFlow){
-            is SanjiniEvent.SUCCESS -> {
-                val index = viewModel.getSelectedIndex()
-                navController.navigate(Screen.GameScreen.route + "?index=$index")
+    LaunchedEffect(key1 = true){
+        viewModel.eventFlow.collectLatest {event ->
+            when(event){
+                is SanjiniEvent.SUCCESS -> {
+                    val index = viewModel.getSelectedIndex()
+                    navController.navigate(Screen.GameScreen.route + "?index=$index")
+                }
+                is SanjiniEvent.ERROR -> Toast.makeText(context, "데이터 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                else -> {}
             }
-            is SanjiniEvent.ERROR -> Toast.makeText(context, "데이터 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
-            else -> {}
         }
-
     }
     SanjiniButtonTitle(
         modifier = Modifier
