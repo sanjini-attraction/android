@@ -31,7 +31,7 @@ import com.jeongg.sanjini_attraction.presentation.navigation.Screen
 import com.jeongg.sanjini_attraction.ui.theme.main_yellow
 import com.jeongg.sanjini_attraction.ui.theme.typography
 
-const val FINISH_MESSAGE = "a"
+const val FINISH_MESSAGE = "-24"
 
 @Composable
 fun GameScreen(

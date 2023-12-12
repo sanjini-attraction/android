@@ -84,7 +84,6 @@ class GameViewModel @Inject constructor(
                     _state.update { it.copy(
                         messages = it.messages + result.message
                     ) }
-                    "result in GameViewModel ${state.value.messages}".log()
                 }
                 is ConnectionResult.Error -> {
                     _state.update { it.copy(

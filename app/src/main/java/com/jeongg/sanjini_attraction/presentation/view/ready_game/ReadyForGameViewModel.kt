@@ -8,7 +8,9 @@ import com.jeongg.sanjini_attraction.R
 import com.jeongg.sanjini_attraction.domain.model.SelectionOption
 import com.jeongg.sanjini_attraction.domain.repository.BluetoothRepository
 import com.jeongg.sanjini_attraction.presentation.util.SanjiniEvent
+import com.jeongg.sanjini_attraction.util.log
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,20 +61,19 @@ class ReadyForGameViewModel @Inject constructor(
         return _options.find { it.selected }?.index ?: 0
     }
     private fun sendMessage() {
-        val index = getSelectedIndex()
-        val message = "$index ${people.value} ${score.value}"
 
         viewModelScope.launch {
             if (!isValid(people.value) || !isValid(score.value)) {
                 _eventFlow.emit(SanjiniEvent.ERROR("값은 1~100 사이의 숫자만 입력 가능합니다."))
                 return@launch
             }
-            val bluetoothMessage = bluetoothRepository.trySendMessage(message)
-            if(bluetoothMessage != null) {
-                _eventFlow.emit(SanjiniEvent.SUCCESS)
-            } else {
-                _eventFlow.emit(SanjiniEvent.ERROR("메시지 전송에 실패했습니다."))
+            val message = "${getSelectedIndex()} ${people.value} ${score.value}"
+            message.forEach{
+                val value = bluetoothRepository.trySendMessage(it.toString())
+                if (value == null) _eventFlow.emit(SanjiniEvent.ERROR("메시지 전송에 실패했습니다."))
+                delay(100)
             }
+            _eventFlow.emit(SanjiniEvent.SUCCESS)
         }
     }
 

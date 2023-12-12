@@ -26,4 +26,5 @@ interface BluetoothRepository {
 
     fun setPeople(people: Int)
     fun setScore(score: Int)
+    fun removeMessages()
 }

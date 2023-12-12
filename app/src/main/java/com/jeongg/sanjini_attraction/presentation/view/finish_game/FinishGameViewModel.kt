@@ -36,7 +36,11 @@ class FinishGameViewModel @Inject constructor(
     private fun getResult() {
         viewModelScope.launch {
             try {
-                val message = bluetoothRepository.messages.value.filter{isValid(it)}
+                var message = bluetoothRepository.messages.value.filter{isValid(it)}
+                val peopleSize = bluetoothRepository.people.value
+                if (message.size+1 != peopleSize){
+                    message = message.subList(0, peopleSize)
+                }
                 val goal = bluetoothRepository.score.value
 
                 _result.value = message.mapIndexed { index, s ->

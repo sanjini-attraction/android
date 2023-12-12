@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.nio.ByteBuffer
 
 class BluetoothDataTransferService(
     private val socket: BluetoothSocket
@@ -25,12 +26,7 @@ class BluetoothDataTransferService(
                 } catch (e: IOException) {
                     throw TransferFailedException()
                 }
-
-                emit(
-                    buffer.decodeToString(
-                        endIndex = byteCount
-                    )
-                )
+                emit( buffer[0].toInt().toString())
             }
         }.flowOn(Dispatchers.IO)
     }
@@ -42,8 +38,10 @@ class BluetoothDataTransferService(
             } catch (e: IOException) {
                 e.printStackTrace()
                 return@withContext false
+            } catch (e: Exception){
+                e.printStackTrace()
+                return@withContext false
             }
-
             true
         }
     }

@@ -123,6 +123,10 @@ class BluetoothRepositoryImpl(
         _score.update { score }
     }
 
+    override fun removeMessages() {
+        _messages.update { emptyList() }
+    }
+
     override fun connectToDevice(device: BluetoothDeviceDomain): Flow<ConnectionResult> {
         return flow {
             if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
@@ -138,6 +142,7 @@ class BluetoothRepositoryImpl(
             stopDiscovery()
             currentClientSocket?.let { socket ->
                 socket.connect()
+                "연결 성공".log()
                 emit(ConnectionResult.ConnectionEstablished)
             }
             getMessage()
@@ -162,7 +167,6 @@ class BluetoothRepositoryImpl(
                     emitAll(
                         it.listenForIncomingMessages()
                             .map { message ->
-                                "데이터 받아옴  in repositoryImpl ${messages.value.toString()}".log()
                                 _messages.update { m -> m.plus(message) }
                                 ConnectionResult.TransferSucceeded(message)
                             }
