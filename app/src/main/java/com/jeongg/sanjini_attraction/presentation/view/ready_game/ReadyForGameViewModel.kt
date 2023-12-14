@@ -67,11 +67,11 @@ class ReadyForGameViewModel @Inject constructor(
                 _eventFlow.emit(SanjiniEvent.ERROR("값은 1~100 사이의 숫자만 입력 가능합니다."))
                 return@launch
             }
-            val message = "${getSelectedIndex()} ${people.value} ${score.value} \n"
+            val message = "${getSelectedIndex()} ${people.value} A"
             message.forEach{
                 val value = bluetoothRepository.trySendMessage(it.toString())
                 if (value == null) _eventFlow.emit(SanjiniEvent.ERROR("메시지 전송에 실패했습니다."))
-                delay(100)
+                delay(200)
             }
             _eventFlow.emit(SanjiniEvent.SUCCESS)
         }

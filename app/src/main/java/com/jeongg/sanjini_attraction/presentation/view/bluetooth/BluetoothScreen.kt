@@ -23,6 +23,7 @@ import com.jeongg.sanjini_attraction.presentation.component.SanjiniDivider
 import com.jeongg.sanjini_attraction.presentation.component.SanjiniTitle
 import com.jeongg.sanjini_attraction.presentation.navigation.Screen
 import com.jeongg.sanjini_attraction.ui.theme.typography
+import com.jeongg.sanjini_attraction.util.log
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -33,14 +34,16 @@ fun BluetoothScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = state.errorMessage) {
-        state.errorMessage?.let { message ->
-            Toast.makeText(context,message,Toast.LENGTH_LONG).show()
-        }
+    if (state.errorMessage != null) {
+        Toast.makeText(context, "연결에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        viewModel.clearError()
     }
     when{
         state.isConnecting -> ProgressIndicator()
-        state.isConnected -> { navController.navigate(Screen.ReadyForGameScreen.route) }
+        state.isConnected -> {
+            Toast.makeText(context, "블루투스 연결에 성공하였습니다.",Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.ReadyForGameScreen.route)
+        }
     }
     SanjiniTitle(
         modifier = Modifier.fillMaxSize(),

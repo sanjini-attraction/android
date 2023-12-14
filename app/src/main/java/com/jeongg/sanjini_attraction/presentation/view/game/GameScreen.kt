@@ -46,7 +46,7 @@ fun GameScreen(
     }
     LaunchedEffect(key1 = state.errorMessage) {
         state.errorMessage?.let { message ->
-            Toast.makeText(context,message, Toast.LENGTH_LONG).show()
+            Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
         }
     }
     SanjiniTitle(title = viewModel.title.value, description = viewModel.description.value) {

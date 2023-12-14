@@ -46,6 +46,9 @@ class BluetoothViewModel @Inject constructor(
         _state.update { it.copy(isConnecting = true) }
         deviceConnectionJob = bluetoothRepository.connectToDevice(device).listen()
     }
+    fun clearError(){
+        _state.update { it.copy(errorMessage = null)}
+    }
 
     private fun Flow<ConnectionResult>.listen(): Job {
         return onEach { result ->
@@ -61,7 +64,7 @@ class BluetoothViewModel @Inject constructor(
                     _state.update { it.copy(
                         isConnected = false,
                         isConnecting = false,
-                        errorMessage = result.message
+                        errorMessage = "블루투스 연결에 실패했습니다. 다시 시도해주세요."
                     ) }
                 }
                 else -> {}
