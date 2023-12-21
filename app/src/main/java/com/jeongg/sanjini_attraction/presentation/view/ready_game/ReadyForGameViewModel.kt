@@ -72,7 +72,7 @@ class ReadyForGameViewModel @Inject constructor(
             message.forEach{
                 val value = bluetoothRepository.trySendMessage(it.toString())
                 if (value == null) _eventFlow.emit(SanjiniEvent.ERROR("메시지 전송에 실패했습니다."))
-                delay(180)
+                delay(200)
             }
             _eventFlow.emit(SanjiniEvent.SUCCESS)
         }
