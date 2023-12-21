@@ -38,7 +38,7 @@ class FinishGameViewModel @Inject constructor(
             try {
                 var message = bluetoothRepository.messages.value.filter{isValid(it)}
                 val peopleSize = bluetoothRepository.people.value
-                if (message.size+1 != peopleSize){
+                if (message.size > peopleSize){
                     message = message.subList(0, peopleSize)
                 }
                 val goal = bluetoothRepository.score.value
