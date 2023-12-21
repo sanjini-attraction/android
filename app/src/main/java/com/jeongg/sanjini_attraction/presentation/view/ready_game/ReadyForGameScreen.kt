@@ -20,11 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -133,6 +132,7 @@ fun GameSelect(
     ){
         options.forEach { option ->
             GameElement(
+                modifier = Modifier.fillMaxWidth().height(90.dp),
                 title = option.title,
                 description = option.description,
                 id = option.id,
@@ -145,6 +145,7 @@ fun GameSelect(
 
 @Composable
 fun GameElement(
+    modifier: Modifier  = Modifier,
     title: String,
     description: String,
     @DrawableRes id: Int,
@@ -152,19 +153,18 @@ fun GameElement(
     isChecked: Boolean
 ){
     val img = if (isChecked) R.drawable.checked else R.drawable.unchecked
-    val borderModifier = if (isChecked) Modifier.border(3.dp, main_yellow, MaterialTheme.shapes.large) else Modifier
+    val borderModifier = if (isChecked) modifier.border(3.dp, main_yellow, MaterialTheme.shapes.large) else modifier
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(90.dp)
+        modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .clickable(onClick = onClick)
     ){
         Image(
             painter = painterResource(id),
             contentDescription = "game_image",
-            modifier = borderModifier.fillMaxSize()
+            modifier = borderModifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier

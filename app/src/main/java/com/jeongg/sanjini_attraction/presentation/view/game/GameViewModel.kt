@@ -51,7 +51,7 @@ class GameViewModel @Inject constructor(
     val description = _description
 
     private val options = listOf(
-        Pair("퍽 굴리기", "주어진 목표지점으로부터 k만큼 떨어지도록 퍽이 위치하도록 굴려주세요"),
+        Pair("흔들기 게임", "k번만큼 진동센서를 흔들어주세요."),
         Pair("미니 펀치 머신", "k만큼의 펀치력으로 미니 펀치 머신을 구부려주세요"),
         Pair("시간 맞히기", "k초가 됐다 싶으면 버튼을 눌러 종료해주세요."),
     )

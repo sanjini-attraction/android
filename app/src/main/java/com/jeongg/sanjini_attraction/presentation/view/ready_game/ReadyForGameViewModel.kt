@@ -30,7 +30,7 @@ class ReadyForGameViewModel @Inject constructor(
     val score = _score
 
     private val _options = listOf(
-        SelectionOption(0, R.drawable.puck, "퍽 굴리기", "정확하게 퍽을 굴려보세요.\n목표 점수는 해당 퍽에서 떨어진 거리예요.", true),
+        SelectionOption(0, R.drawable.puck, "흔들기 게임", "정확하게 흔들어보세요.\n목표 점수는 몇 번 흔들었는지예요.", true),
         SelectionOption(1, R.drawable.punch, "미니 펀치 머신", "목표 점수에 해당하는 만큼의 펀치력을 보여주세요.", false),
         SelectionOption(2, R.drawable.time, "시간 맞히기", "내가 생각하기에 목표 시간이 되면 버튼을 클릭해주세요.", false),
     ).toMutableStateList()
@@ -68,6 +68,7 @@ class ReadyForGameViewModel @Inject constructor(
                 return@launch
             }
             val message = "${getSelectedIndex()} ${people.value} A"
+            message.log()
             message.forEach{
                 val value = bluetoothRepository.trySendMessage(it.toString())
                 if (value == null) _eventFlow.emit(SanjiniEvent.ERROR("메시지 전송에 실패했습니다."))
